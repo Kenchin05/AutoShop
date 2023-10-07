@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Scanner</title>
+    <style>
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+        }
+
+        video {
+            width: 100%;
+            max-width: 600px;
+        }
+
+        #scanner-container {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Add your existing content here -->
+
+    <!-- Your existing hyperlink -->
+    <a href="#" id="openScannerLink">Open QR Scanner</a>
+
+    <div id="scanner-container">
+        <video id="scanner" playsinline></video>
+    </div>
+
+    <script src="https://rawgit.com/schmich/instascan-builds/master/instascan.min.js"></script>
+    <script>
+        document.getElementById('openScannerLink').addEventListener('click', function (e) {
+            e.preventDefault();
+
+            // Show the scanner container and hide the link
+            document.getElementById('scanner-container').style.display = 'block';
+            document.getElementById('openScannerLink').style.display = 'none';
+
+            // Create a new Instascan scanner
+            let scanner = new Instascan.Scanner({ video: document.getElementById('scanner') });
+
+            // Add a listener for when a QR code is scanned
+            scanner.addListener('scan', function (content) {
+                alert('Scanned: ' + content);
+                // You can perform additional actions with the scanned content here
+
+                // Optional: Close the scanner after a successful scan
+                document.getElementById('scanner-container').style.display = 'none';
+                document.getElementById('openScannerLink').style.display = 'block';
+            });
+
+            // Start the scanner
+            Instascan.Camera.getCameras().then(function (cameras) {
+                if (cameras.length > 0) {
+                    scanner.start(cameras[0]); // Use the first available camera
+                } else {
+                    console.error('No cameras found.');
+                    alert('No cameras found.');
+                }
+            }).catch(function (e) {
+                console.error(e);
+            });
+        });
+    </script>
+
+    <!-- Add your existing scripts here -->
+</body>
+</html>
